@@ -12,7 +12,8 @@ if (isset($_GET['id'])) {
         $stmt->bind_param("i", $id);
 
         if ($stmt->execute()) {
-            echo "Książka została usunięta.";
+            header("Location: index.php?action=deleted");
+            exit;
         } else {
             echo "Błąd podczas usuwania książki.";
         }
@@ -46,19 +47,22 @@ if (isset($_GET['id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Potwierdzenie usunięcia książki</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <title>Potwierdzenie usunięcia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body>
-    <div class="container">
-        <h1>Potwierdzenie usunięcia książki</h1>
-        <p>Czy na pewno chcesz usunąć książkę <strong><?php echo $title; ?></strong> autorstwa <strong><?php echo $author; ?></strong>?</p>
-        <form action="delete.php?id=<?php echo $id; ?>" method="post">
-            <button type="submit" class="btn btn-danger">Tak, usuń książkę</button>
-            <a href="index.php" class="btn btn-secondary">Anuluj</a>
+<body class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen p-8">
+
+    <div class="bg-gray-800 p-6 rounded-lg shadow-md max-w-lg text-center">
+        <h1 class="text-2xl font-bold mb-4">Potwierdzenie usunięcia</h1>
+        <p class="mb-4">Czy na pewno chcesz usunąć książkę <strong class="text-red-400"><?php echo $title; ?></strong> autorstwa <strong class="text-blue-400"><?php echo $author; ?></strong>?</p>
+        
+        <form action="delete.php?id=<?php echo $id; ?>" method="post" class="flex justify-center space-x-4">
+            <button type="submit" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-white font-semibold">Tak, usuń</button>
+            <a href="index.php" class="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded-lg text-white font-semibold">Anuluj</a>
         </form>
     </div>
+
 </body>
 
 </html>

@@ -49,58 +49,62 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edytuj książkę</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body>
-    <div class="container">
-        <h1>Edytuj książkę</h1>
-        <form action="edit.php?id=<?php echo $id; ?>" method="post">
-            <div class="mb-3">
-                <label for="title" class="form-label">Tytuł książki:</label>
-                <input type="text" name="title" id="title" class="form-control" value="<?php echo $title; ?>" required>
-            </div>
-            <div class="mb-3">
-                <label for="author_id" class="form-label">Autor:</label>
-                <select name="author_id" id="author_id" class="form-control" required>
-                    <?php while ($author = $authors->fetch_assoc()) { ?>
-                        <option value="<?php echo $author['ID']; ?>" <?php echo ($author['ID'] == $author_id) ? 'selected' : ''; ?>>
-                            <?php echo $author['first_name'] . ' ' . $author['last_name']; ?>
-                        </option>
-                    <?php } ?>
-                </select>
-                <button type="button" class="btn btn-secondary mt-2" data-bs-toggle="modal" data-bs-target="#addAuthorModal">Dodaj autora</button>
-            </div>
-            <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
-        </form>
-    </div>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center p-8">
 
-    <div class="modal fade" id="addAuthorModal" tabindex="-1" aria-labelledby="addAuthorModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addAuthorModalLabel">Dodaj autora</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <h1 class="text-3xl font-bold mb-6">Edytuj książkę</h1>
+
+    <form action="edit.php?id=<?php echo $id; ?>" method="post" class="bg-gray-800 p-6 rounded-lg shadow-md w-full max-w-lg">
+        <div class="mb-4">
+            <label for="title" class="block text-lg">Tytuł książki:</label>
+            <input type="text" name="title" id="title" class="w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-white" value="<?php echo $title; ?>" required>
+        </div>
+        <div class="mb-4">
+            <label for="author_id" class="block text-lg">Autor:</label>
+            <select name="author_id" id="author_id" class="w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-white" required>
+                <?php while ($author = $authors->fetch_assoc()) { ?>
+                    <option value="<?php echo $author['ID']; ?>" <?php echo ($author['ID'] == $author_id) ? 'selected' : ''; ?>>
+                        <?php echo $author['first_name'] . ' ' . $author['last_name']; ?>
+                    </option>
+                <?php } ?>
+            </select>
+            <button type="button" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 mt-3 rounded-lg text-white font-semibold" onclick="openModal()">Dodaj autora</button>
+        </div>
+        <button type="submit" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg text-white font-semibold">Zapisz zmiany</button>
+    </form>
+
+    <!-- Modal -->
+    <div id="addAuthorModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+        <div class="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
+            <h2 class="text-xl font-bold mb-4">Dodaj autora</h2>
+            <form id="addAuthorForm">
+                <div class="mb-3">
+                    <label for="new_first_name" class="block">Imię:</label>
+                    <input type="text" id="new_first_name" class="w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-white" required>
                 </div>
-                <div class="modal-body">
-                    <form id="addAuthorForm">
-                        <div class="mb-3">
-                            <label for="new_first_name" class="form-label">Imię:</label>
-                            <input type="text" id="new_first_name" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="new_last_name" class="form-label">Nazwisko:</label>
-                            <input type="text" id="new_last_name" class="form-control" required>
-                        </div>
-                        <button type="button" class="btn btn-primary" onclick="addAuthor()">Dodaj</button>
-                    </form>
+                <div class="mb-3">
+                    <label for="new_last_name" class="block">Nazwisko:</label>
+                    <input type="text" id="new_last_name" class="w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-white" required>
                 </div>
-            </div>
+                <div class="flex justify-between">
+                    <button type="button" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-white font-semibold" onclick="closeModal()">Anuluj</button>
+                    <button type="button" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-white font-semibold" onclick="addAuthor()">Dodaj</button>
+                </div>
+            </form>
         </div>
     </div>
 
     <script>
+        function openModal() {
+            document.getElementById('addAuthorModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('addAuthorModal').classList.add('hidden');
+        }
+
         function addAuthor() {
             let firstName = document.getElementById('new_first_name').value;
             let lastName = document.getElementById('new_last_name').value;
@@ -125,8 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         select.value = data.id;
                         document.getElementById('new_first_name').value = '';
                         document.getElementById('new_last_name').value = '';
-                        let modal = bootstrap.Modal.getInstance(document.getElementById('addAuthorModal'));
-                        modal.hide();
+                        closeModal();
                     } else {
                         alert('Błąd podczas dodawania autora.');
                     }
@@ -134,6 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
         }
     </script>
+
 </body>
 
 </html>
